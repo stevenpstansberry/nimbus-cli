@@ -5,3 +5,5 @@ infrastructure/terraform.tfstate.backup
 infrastructure/.terraform/*
 *.egg-info/
 __pycache__/
+cli/commands/.env
+build/*
