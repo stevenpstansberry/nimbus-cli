@@ -7,3 +7,4 @@ infrastructure/.terraform/*
 __pycache__/
 cli/commands/.env
 build/*
+api/models/.env
