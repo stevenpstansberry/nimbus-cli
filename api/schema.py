@@ -8,14 +8,19 @@ class FileType(SQLAlchemyObjectType):
     class Meta:
         model = File
 
+    download_url = graphene.String()  # Add pre-signed URL field
+
 # Define the Query
 class Query(graphene.ObjectType):
-    list_files = graphene.List(FileType)
+    get_file = graphene.Field(FileType, id=graphene.Int(required=True))
 
-    def resolve_list_files(self, info):
-        return FileResolver.list_files()
+    def resolve_get_file(self, info, id):
+        file_data = FileResolver.get_file(id)
+        if not file_data:
+            return None  # File not found
+        return file_data
 
-# Define the Mutation
+# Define the Mutation to Add File Metadata
 class AddFile(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
@@ -23,14 +28,15 @@ class AddFile(graphene.Mutation):
         tags = graphene.String(required=False)
         s3_key = graphene.String(required=True)
 
-    file = graphene.Field(lambda: FileType)
+    success = graphene.Boolean()
 
     def mutate(self, info, name, size, tags, s3_key):
         file = FileResolver.add_file(name, size, tags, s3_key)
-        return AddFile(file=file)
+        return AddFile(success=True if file else False)
 
+
+# Create a Mutation Class
 class Mutation(graphene.ObjectType):
     add_file = AddFile.Field()
 
-# Combine Query and Mutation into the Schema
 schema = graphene.Schema(query=Query, mutation=Mutation)

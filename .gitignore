@@ -5,6 +5,6 @@ infrastructure/terraform.tfstate.backup
 infrastructure/.terraform/*
 *.egg-info/
 __pycache__/
-cli/commands/.env
 build/*
-api/models/.env
+.env
+two_test_example.txt
