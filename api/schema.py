@@ -1,23 +1,16 @@
 import graphene
-from graphene_sqlalchemy import SQLAlchemyObjectType
-from models.file import File
+from models.file_type import FileType
 from resolvers.file_resolver import FileResolver
 
-# Define the FileType for GraphQL
-class FileType(SQLAlchemyObjectType):
-    class Meta:
-        model = File
-
-    download_url = graphene.String()  # Add pre-signed URL field
 
 # Define the Query
 class Query(graphene.ObjectType):
-    get_file = graphene.Field(FileType, id=graphene.Int(required=True))
+    getFile = graphene.Field(FileType, id=graphene.Int(required=True))
 
-    def resolve_get_file(self, info, id):
+    def resolve_getFile(self, info, id):
         file_data = FileResolver.get_file(id)
         if not file_data:
-            return None  # File not found
+            return None
         return file_data
 
 # Define the Mutation to Add File Metadata
